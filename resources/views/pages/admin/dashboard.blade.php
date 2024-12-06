@@ -1,4 +1,4 @@
-<x-admin-layout>
+<x-admin-layout :title="'Dashboard-Admin'">
     <div class="container-fluid py-2">
         <footer class="footer py-4">
             <div class="container-fluid">

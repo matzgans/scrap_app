@@ -1,10 +1,10 @@
-<x-admin-layout>
+<x-admin-layout :title="'Dashboard-User'">
     <div class="container-fluid py-2">
         <footer class="footer py-4">
             <div class="container-fluid">
                 <div class="row">
                     <div class="col-12 col-md-12">
-                        <h3>Hallo Admin</h3>
+                        <h3>Hallo User</h3>
                     </div>
                 </div>
                 <div class="row align-items-center justify-content-lg-between">
