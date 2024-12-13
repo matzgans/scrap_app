@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Scraping;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -11,7 +12,8 @@ class ScrapingController extends Controller
 {
     public function index()
     {
-        return view('pages.admin.scraping.index');
+        $scraping_datas =  Scraping::all();
+        return view('pages.admin.scraping.index', compact('scraping_datas'));
     }
     public function create()
     {
@@ -19,7 +21,6 @@ class ScrapingController extends Controller
     }
     public function store(Request $request)
     {
-        // dd($request);
         $request->validate([
             'links' => 'required|array|min:1',
             'links.*' => 'required|url',
@@ -27,30 +28,58 @@ class ScrapingController extends Controller
         ]);
 
         $results = [];
-        $aggregatedResults = [
-            'headers' => [],
-            'links' => [],
-            'related_links' => [],
-        ];
-
         $searchWord = $request->word;
 
         if (empty($searchWord)) {
             throw new \Exception('Word to search cannot be empty');
         }
 
-        // Fungsi untuk mengambil header (h1, h2, h3 dengan prioritas)
-        function extractFirstHeader($dom)
+        // Fungsi untuk membersihkan teks dari karakter tersembunyi dan whitespace berlebih
+        function cleanText($text)
         {
-            $headerTags = ['h1', 'h2', 'h3'];
-            foreach ($headerTags as $tag) {
-                $elements = $dom->getElementsByTagName($tag);
-                if ($elements->length > 0) {
-                    return $elements->item(0)->textContent; // Ambil teks dari header pertama yang ditemukan
+            return trim(preg_replace('/\s+/', ' ', $text));
+        }
+
+        // Fungsi untuk mengambil kata terkait dari elemen spesifik
+        function extractRelatedWordsFromElements($dom, $searchWord)
+        {
+            $elementsToCheck = ['h1', 'h2', 'h3', '.title'];
+            $relatedWords = [];
+
+            foreach ($elementsToCheck as $selector) {
+                if (strpos($selector, '.') === 0) {
+                    // Cari elemen berdasarkan class
+                    $className = substr($selector, 1);
+                    $xpath = new \DOMXPath($dom);
+                    $nodes = $xpath->query("//*[contains(@class, '$className')]");
+                } else {
+                    // Cari elemen berdasarkan tag
+                    $nodes = $dom->getElementsByTagName($selector);
+                }
+
+                foreach ($nodes as $node) {
+                    $text = $node->textContent;
+                    $cleanedText = cleanText($text); // Bersihkan teks
+
+                    // Periksa apakah kata pencarian ada dalam teks
+                    if (stripos($cleanedText, $searchWord) !== false) {
+                        // Simpan kalimat atau teks yang mengandung kata pencarian
+                        $relatedWords[] = $cleanedText;
+                    }
                 }
             }
-            return null; // Jika tidak ada header
+
+            // Debug: Cek hasil yang akan dikembalikan
+
+
+            // Hilangkan duplikasi dan sortir array
+            $relatedWords = array_unique($relatedWords);  // Hilangkan duplikasi
+            $relatedWords = array_values($relatedWords);  // Mengatur ulang indeks array
+
+            return $relatedWords; // Kembalikan array yang terurut
         }
+
+
 
         // Fungsi untuk scraping link terkait
         function scrapeLinks($link, $searchWord)
@@ -64,15 +93,19 @@ class ScrapingController extends Controller
             foreach ($anchorTags as $tag) {
                 $href = $tag->getAttribute('href');
                 if (!empty($href) && strpos(strtolower($href), strtolower($searchWord)) !== false) {
+                    // Menambahkan link terkait
                     $filteredLinks[] = $href;
                 }
             }
-            return $filteredLinks;
+            $filteredLinks = array_unique($filteredLinks);  // Hilangkan duplikasi
+            $filteredLinks = array_values($filteredLinks);
+
+            return $filteredLinks; // Hilangkan duplikasi
         }
 
         foreach ($request->links as $link) {
             try {
-                // Fetch konten utama dari link
+                // Ambil konten utama dari link
                 $ch = curl_init($link);
                 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
                 curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
@@ -86,79 +119,49 @@ class ScrapingController extends Controller
                 $dom = new \DOMDocument();
                 @$dom->loadHTML($html);
 
-                $body = $dom->getElementsByTagName('body')->item(0);
-                $content = $body ? $body->textContent : '';
-
-                // Cari header
-                $header = extractFirstHeader($dom);
+                // Cari kata terkait dari elemen tertentu
+                $relatedWords = extractRelatedWordsFromElements($dom, $searchWord);
 
                 // Ekstrak link yang relevan
                 $relatedLinks = scrapeLinks($link, $searchWord);
-
-                $relatedHeaders = [];
-                // Proses related links untuk mengambil header terkait
-                foreach ($relatedLinks as $relatedLink) {
-                    try {
-                        $relatedHtml = file_get_contents($relatedLink);
-                        @$dom->loadHTML($relatedHtml);
-                        $relatedHeader = extractFirstHeader($dom);
-
-                        if ($relatedHeader) {
-                            $relatedHeaders[] = $relatedHeader;
-                            $aggregatedResults['headers'][] = $relatedHeader;
-                        }
-                        $aggregatedResults['links'][] = $relatedLink;
-                    } catch (\Exception $e) {
-                        // Error pada related link diabaikan
-                    }
-                }
 
                 // Simpan hasil ke results
                 $results[] = [
                     'link' => $link,
                     'word' => $searchWord,
-                    'matches' => substr_count(strtolower($content), strtolower($searchWord)),
-                    'header' => [
-                        'main' => $header,
-                        'related' => $relatedHeaders,
-                    ],
+                    'related_words' => $relatedWords,
                     'related_links' => $relatedLinks,
                 ];
-
-                // Tambahkan hasil ke agregat
-                if ($header) {
-                    $aggregatedResults['headers'][] = $header;
-                }
-                $aggregatedResults['links'][] = $link;
             } catch (\Exception $e) {
                 $results[] = [
                     'link' => $link,
                     'word' => $searchWord,
-                    'matches' => 0,
                     'error' => $e->getMessage(),
-                    'header' => [
-                        'main' => null,
-                        'related' => [],
-                    ],
+                    'related_words' => [],
                     'related_links' => [],
                 ];
             }
         }
 
-        // Hilangkan duplikasi dalam data agregat
-        $aggregatedResults['headers'] = array_unique($aggregatedResults['headers']);
-        $aggregatedResults['links'] = array_unique($aggregatedResults['links']);
-        $aggregatedResults['related_links'] = array_unique($aggregatedResults['related_links']);
+        if (!$results) {
+            return redirect()->back()->with([
+                'message' => 'Scraping Tidak Berhasil Di Disimpan',
+            ]);
+        }
 
-        // Tampilkan hasil akhir untuk debug
+        foreach ($results as $data) {
+            Scraping::create([
+                'link' => $data['link'],
+                'word' => $data['word'],
+                'related_words' => $data['related_words'],
+                'related_links' => $data['related_links'],
+            ]);
+        }
 
 
-        // Simpan hasil yang terstruktur ke dalam session
-        session()->flash('results', $results);
-        session()->flash('aggregated_results', $aggregatedResults);
 
         // Redirect kembali ke form dengan data yang sudah diolah
-        return redirect()->back()->with([
+        return redirect()->route('admin.scraping.index')->with([
             'message' => 'Scraping berhasil dilakukan!',
         ]);
     }

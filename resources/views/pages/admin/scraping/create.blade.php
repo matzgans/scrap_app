@@ -8,61 +8,32 @@
                         <h6 class="mb-0">Tambah Data Scraping</h6>
                     </div>
                 </div>
-
                 <div class="col-12">
                     <div class="card my-4">
                         <div class="card-body pb-2">
-                            @if (!empty(session('results')))
-                                @foreach (session('results') as $result)
-                                    <div style="border: 1px solid #ddd; margin-bottom: 20px; padding: 10px;">
-                                        <h2>Link: <a href="{{ $result['link'] }}"
-                                                target="_blank">{{ $result['link'] }}</a></h2>
-                                        <p><strong>Search Word:</strong> {{ $result['word'] }}</p>
-                                        <p><strong>Matches Found:</strong> {{ $result['matches'] }}</p>
-                                        <p><strong>Main Header:</strong> {{ $result['header']['main'] ?? 'N/A' }}</p>
-                                        <p><strong>Related Headers:</strong></p>
-                                        <ul>
-                                            @forelse ($result['header']['related'] as $relatedHeader)
-                                                <li>{{ $relatedHeader }}</li>
-                                            @empty
-                                                <li>No related headers found</li>
-                                            @endforelse
-                                        </ul>
-                                        <p><strong>Related Links:</strong></p>
-                                        <ul>
-                                            @forelse ($result['related_links'] as $relatedLink)
-                                                <li><a href="{{ $relatedLink }}"
-                                                        target="_blank">{{ $relatedLink }}</a></li>
-                                            @empty
-                                                <li>No related links found</li>
-                                            @endforelse
-                                        </ul>
-                                    </div>
-                                @endforeach
-                            @else
-                                <form action="{{ route('admin.scraping.store') }}" method="POST">
-                                    @csrf
-                                    <div class="row">
-                                        <div class="col-md-12" id="links-container">
-                                            <div class="input-group input-group-outline my-3">
-                                                <label class="form-label">Masukan Link 1</label>
-                                                <input class="form-control" name="links[]" type="text" required>
-                                            </div>
-                                        </div>
-                                        <button class="btn btn-primary" id="add-link-button" type="button">Tambah
-                                            Link</button>
-                                        <div class="col-md-12">
-                                            <div class="input-group input-group-outline my-3">
-                                                <label class="form-label">Masukkan Kata</label>
-                                                <input class="form-control" name="word" type="text">
-                                            </div>
-                                        </div>
-                                    </div>
-                                    {{-- <button class="btn btn-primary" id="add-link-button" type="button">Tambah Link</button> --}}
-                                    <button class="btn btn-success" type="submit">Cari</button>
 
-                                </form>
-                            @endif
+                            <form action="{{ route('admin.scraping.store') }}" method="POST">
+                                @csrf
+                                <div class="row">
+                                    <div class="col-md-12" id="links-container">
+                                        <div class="input-group input-group-outline my-3">
+                                            <label class="form-label">Masukan Link 1</label>
+                                            <input class="form-control" name="links[]" type="text" required>
+                                        </div>
+                                    </div>
+                                    <button class="btn btn-primary" id="add-link-button" type="button">Tambah
+                                        Link</button>
+                                    <div class="col-md-12">
+                                        <div class="input-group input-group-outline my-3">
+                                            <label class="form-label">Masukkan Kata</label>
+                                            <input class="form-control" name="word" type="text">
+                                        </div>
+                                    </div>
+                                </div>
+                                {{-- <button class="btn btn-primary" id="add-link-button" type="button">Tambah Link</button> --}}
+                                <button class="btn btn-success" type="submit">Cari</button>
+
+                            </form>
 
 
                         </div>

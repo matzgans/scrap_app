@@ -2,228 +2,79 @@
     <div class="container-fluid">
         <div class="card mt-4">
             <div class="card-header p-3 pb-0">
+                @if (Session::has('message'))
+                    <div class="alert alert-success alert-dismissible fade show text-white" role="alert">
+                        <span class="alert-icon align-middle">
+                            <span class="material-symbols-rounded text-md">
+                                thumb_up_off_alt
+                            </span>
+                        </span>
+                        <span class="alert-text"><strong>Success!</strong> T{{ Session::get('message') }}</span>
+                        <button class="btn-close" data-bs-dismiss="alert" type="button" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                @endif
                 <div class="row">
-                    <div class="col-6 d-flex align-items-center">
-                        <h6 class="mb-0">Data Scraping</h6>
-                    </div>
-                    <div class="col-6 text-end">
-                        <a class="btn bg-gradient-dark mb-0" href="{{ route('admin.scraping.create') }}"><i
-                                class="material-symbols-rounded text-sm">add</i>&nbsp;&nbsp; Tambah Data Scraping</a>
-                    </div>
-                </div>
-
-                <div class="col-12">
-                    <div class="card my-4">
-                        <div class="card-body px-0 pb-2">
-                            <div class="table-responsive p-0">
-                                <table class="align-items-center mb-0 table">
-                                    <thead>
-                                        <tr>
-                                            <th
-                                                class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                                Author</th>
-                                            <th
-                                                class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                                Function</th>
-                                            <th
-                                                class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center">
-                                                Status</th>
-                                            <th
-                                                class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center">
-                                                Employed</th>
-                                            <th class="text-secondary opacity-7"></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>
-                                                <div class="d-flex px-2 py-1">
-                                                    <div>
-                                                        <img class="avatar avatar-sm border-radius-lg me-3"
-                                                            src="../assets/img/team-2.jpg" alt="user1">
-                                                    </div>
-                                                    <div class="d-flex flex-column justify-content-center">
-                                                        <h6 class="mb-0 text-sm">John Michael</h6>
-                                                        <p class="text-secondary mb-0 text-xs">john@creative-tim.com</p>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <p class="font-weight-bold mb-0 text-xs">Manager</p>
-                                                <p class="text-secondary mb-0 text-xs">Organization</p>
-                                            </td>
-                                            <td class="text-center align-middle text-sm">
-                                                <span class="badge badge-sm bg-gradient-success">Online</span>
-                                            </td>
-                                            <td class="text-center align-middle">
-                                                <span class="text-secondary font-weight-bold text-xs">23/04/18</span>
-                                            </td>
-                                            <td class="align-middle">
-                                                <a class="text-secondary font-weight-bold text-xs" data-toggle="tooltip"
-                                                    data-original-title="Edit user" href="javascript:;">
-                                                    Edit
-                                                </a>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <div class="d-flex px-2 py-1">
-                                                    <div>
-                                                        <img class="avatar avatar-sm border-radius-lg me-3"
-                                                            src="../assets/img/team-3.jpg" alt="user2">
-                                                    </div>
-                                                    <div class="d-flex flex-column justify-content-center">
-                                                        <h6 class="mb-0 text-sm">Alexa Liras</h6>
-                                                        <p class="text-secondary mb-0 text-xs">alexa@creative-tim.com
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <p class="font-weight-bold mb-0 text-xs">Programator</p>
-                                                <p class="text-secondary mb-0 text-xs">Developer</p>
-                                            </td>
-                                            <td class="text-center align-middle text-sm">
-                                                <span class="badge badge-sm bg-gradient-secondary">Offline</span>
-                                            </td>
-                                            <td class="text-center align-middle">
-                                                <span class="text-secondary font-weight-bold text-xs">11/01/19</span>
-                                            </td>
-                                            <td class="align-middle">
-                                                <a class="text-secondary font-weight-bold text-xs" data-toggle="tooltip"
-                                                    data-original-title="Edit user" href="javascript:;">
-                                                    Edit
-                                                </a>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <div class="d-flex px-2 py-1">
-                                                    <div>
-                                                        <img class="avatar avatar-sm border-radius-lg me-3"
-                                                            src="../assets/img/team-4.jpg" alt="user3">
-                                                    </div>
-                                                    <div class="d-flex flex-column justify-content-center">
-                                                        <h6 class="mb-0 text-sm">Laurent Perrier</h6>
-                                                        <p class="text-secondary mb-0 text-xs">laurent@creative-tim.com
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <p class="font-weight-bold mb-0 text-xs">Executive</p>
-                                                <p class="text-secondary mb-0 text-xs">Projects</p>
-                                            </td>
-                                            <td class="text-center align-middle text-sm">
-                                                <span class="badge badge-sm bg-gradient-success">Online</span>
-                                            </td>
-                                            <td class="text-center align-middle">
-                                                <span class="text-secondary font-weight-bold text-xs">19/09/17</span>
-                                            </td>
-                                            <td class="align-middle">
-                                                <a class="text-secondary font-weight-bold text-xs" data-toggle="tooltip"
-                                                    data-original-title="Edit user" href="javascript:;">
-                                                    Edit
-                                                </a>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <div class="d-flex px-2 py-1">
-                                                    <div>
-                                                        <img class="avatar avatar-sm border-radius-lg me-3"
-                                                            src="../assets/img/team-3.jpg" alt="user4">
-                                                    </div>
-                                                    <div class="d-flex flex-column justify-content-center">
-                                                        <h6 class="mb-0 text-sm">Michael Levi</h6>
-                                                        <p class="text-secondary mb-0 text-xs">michael@creative-tim.com
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <p class="font-weight-bold mb-0 text-xs">Programator</p>
-                                                <p class="text-secondary mb-0 text-xs">Developer</p>
-                                            </td>
-                                            <td class="text-center align-middle text-sm">
-                                                <span class="badge badge-sm bg-gradient-success">Online</span>
-                                            </td>
-                                            <td class="text-center align-middle">
-                                                <span class="text-secondary font-weight-bold text-xs">24/12/08</span>
-                                            </td>
-                                            <td class="align-middle">
-                                                <a class="text-secondary font-weight-bold text-xs" data-toggle="tooltip"
-                                                    data-original-title="Edit user" href="javascript:;">
-                                                    Edit
-                                                </a>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <div class="d-flex px-2 py-1">
-                                                    <div>
-                                                        <img class="avatar avatar-sm border-radius-lg me-3"
-                                                            src="../assets/img/team-2.jpg" alt="user5">
-                                                    </div>
-                                                    <div class="d-flex flex-column justify-content-center">
-                                                        <h6 class="mb-0 text-sm">Richard Gran</h6>
-                                                        <p class="text-secondary mb-0 text-xs">richard@creative-tim.com
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <p class="font-weight-bold mb-0 text-xs">Manager</p>
-                                                <p class="text-secondary mb-0 text-xs">Executive</p>
-                                            </td>
-                                            <td class="text-center align-middle text-sm">
-                                                <span class="badge badge-sm bg-gradient-secondary">Offline</span>
-                                            </td>
-                                            <td class="text-center align-middle">
-                                                <span class="text-secondary font-weight-bold text-xs">04/10/21</span>
-                                            </td>
-                                            <td class="align-middle">
-                                                <a class="text-secondary font-weight-bold text-xs"
-                                                    data-toggle="tooltip" data-original-title="Edit user"
-                                                    href="javascript:;">
-                                                    Edit
-                                                </a>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <div class="d-flex px-2 py-1">
-                                                    <div>
-                                                        <img class="avatar avatar-sm border-radius-lg me-3"
-                                                            src="../assets/img/team-4.jpg" alt="user6">
-                                                    </div>
-                                                    <div class="d-flex flex-column justify-content-center">
-                                                        <h6 class="mb-0 text-sm">Miriam Eric</h6>
-                                                        <p class="text-secondary mb-0 text-xs">miriam@creative-tim.com
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <p class="font-weight-bold mb-0 text-xs">Programator</p>
-                                                <p class="text-secondary mb-0 text-xs">Developer</p>
-                                            </td>
-                                            <td class="text-center align-middle text-sm">
-                                                <span class="badge badge-sm bg-gradient-secondary">Offline</span>
-                                            </td>
-                                            <td class="text-center align-middle">
-                                                <span class="text-secondary font-weight-bold text-xs">14/09/20</span>
-                                            </td>
-                                            <td class="align-middle">
-                                                <a class="text-secondary font-weight-bold text-xs"
-                                                    data-toggle="tooltip" data-original-title="Edit user"
-                                                    href="javascript:;">
-                                                    Edit
-                                                </a>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+                    <div class="col-12">
+                        <div class="card my-4">
+                            <div class="card-header position-relative mt-n4 z-index-2 mx-3 p-0">
+                                <div class="bg-gradient-dark shadow-dark border-radius-lg pb-3 pt-4">
+                                    <h6 class="text-capitalize ps-3 text-white">Data Scraping</h6>
+                                </div>
+                            </div>
+                            <div class="card-body px-0 pb-2">
+                                <div class="col-md-12 text-end">
+                                    <a class="btn btn-primary mx-3" href="{{ route('admin.scraping.create') }}"><i
+                                            class="material-symbols-rounded text-sm">add</i>
+                                        Tambah Scraping</a>
+                                </div>
+                                <div class="table-responsive px-3">
+                                    <table class="align-items-center mb-0 table">
+                                        <thead>
+                                            <tr>
+                                                <th
+                                                    class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
+                                                    Link Yang Di Cari</th>
+                                                <th
+                                                    class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-start">
+                                                    Kata Yang Di Cari</th>
+                                                <th
+                                                    class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-start">
+                                                    Kata Yang Berhubunngan</th>
+                                                <th
+                                                    class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-start">
+                                                    Link Yang Berhubunngan</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach ($scraping_datas as $scraping_data)
+                                                <tr>
+                                                    <td>
+                                                        <a
+                                                            href="{{ $scraping_data->link }}">{{ $scraping_data->link }}</a>
+                                                    </td>
+                                                    <td class="text-center align-middle text-sm">
+                                                        <span
+                                                            class="badge badge-sm bg-gradient-success">{{ $scraping_data->word }}</span>
+                                                    </td>
+                                                    <td class="text-center align-middle">
+                                                        @foreach ($scraping_data->related_words as $related_word)
+                                                            <span
+                                                                class="text-secondary font-weight-bold text-xs">{{ $related_word }}</span>
+                                                        @endforeach
+                                                    </td>
+                                                    <td class="text-start align-middle">
+                                                        @foreach ($scraping_data->related_links as $related_links)
+                                                            <a class="text-secondary font-weight-bold text-xs"
+                                                                href="{{ $related_links }}">{{ $related_links }}</a>
+                                                        @endforeach
+                                                    </td>
+                                                </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -271,4 +122,7 @@
             </div>
         </footer>
     </div>
+
+    @push('scripts')
+    @endpush
 </x-admin-layout>
